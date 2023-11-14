@@ -1,16 +1,15 @@
-// app.js
 const express = require('express');
 const http = require('http');
 const socketIO = require('socket.io');
 const bodyParser = require('body-parser');
-const { connectToDatabase } = require('./utils/dbconnect');
-const RateLimiter = require('./utils/ratelimiter');
-const musicController = require('./controllers/musicController');
-const userController = require('./controllers/userController');
-const socketController = require('./controllers/socketController');
-const indexRouter = require('./routers/index');
-const musicRouter = require('./routers/music');
-const userRouter = require('./routers/user');
+const { connectToDatabase } = require('./server/utils/dbconnect');
+const RateLimiter = require('./server/utils/ratelimiter');
+const musicController = require('./server/controllers/MusicController');
+const userController = require('./server/controllers/userController');
+const socketController = require('./server/controllers/SocketController');
+const indexRouter = require('./server/routes/index');
+const musicRouter = require('./server/routes/music');
+const userRouter = require('./server/routes/user');
 
 const app = express();
 const server = http.createServer(app);
@@ -36,6 +35,7 @@ connectToDatabase();
 app.use('/', indexRouter);
 app.use('/music', musicRouter);
 app.use('/user', userRouter);
+
 
 // Initialize socket
 socketController.initializeSocket(io);

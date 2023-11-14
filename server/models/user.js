@@ -1,4 +1,3 @@
-// modules/user.js
 class User {
   constructor(username, socketId) {
       this.username = username;

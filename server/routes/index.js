@@ -1,9 +1,8 @@
-// routers/index.js
 const express = require('express');
 const router = express.Router();
 
-router.get('/', (req, res) => {
-    res.send('Welcome to the music app!');
-});
+app.use('/', indexRouter);
+app.use('/music', musicRouter);
+app.use('/user', userRouter);
 
 module.exports = router;

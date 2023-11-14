@@ -1,5 +1,5 @@
 // musicController.js
-const SC = require('soundcloud'); // Make sure to install the 'soundcloud' package
+const SC = require('soundcloud');
 
 // Function to play SoundCloud track
 const playTrack = (req, res) => {
