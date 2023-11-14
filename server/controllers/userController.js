@@ -1,42 +1,38 @@
-// Import any necessary models or modules you need
-const User = require('../models/user'); // Replace with the actual user model
-const passport = require('passport');
+// UserController.js
+const users = [];
 
-// Function to register a new user
-const registerUser = (req, res) => {
-  const { username, password } = req.body;
-  // Create a new User document and save it to the database
-  User.register(new User({ username }), password, (err, user) => {
-    if (err) {
-      // Handle registration error (e.g., username already exists)
-      return res.status(400).json({ error: err.message });
+// Function to add a new user
+const addUser = (username, socketId) => {
+    const existingUser = users.find((user) => user.username === username);
+
+    if (!existingUser) {
+        const user = { username, socketId };
+        users.push(user);
+        return user;
     }
-    // Log the user in after successful registration
-    passport.authenticate('local')(req, res, () => {
-      return res.status(201).json({ message: 'User registered successfully' });
-    });
-  });
+
+    return null;
 };
 
-// Function to log in a user
-const loginUser = (req, res) => {
-  passport.authenticate('local')(req, res, () => {
-    if (req.user) {
-      return res.status(200).json({ message: 'User logged in successfully' });
-    } else {
-      return res.status(401).json({ error: 'Authentication failed' });
+// Function to remove a user
+const removeUser = (socketId) => {
+    const index = users.findIndex((user) => user.socketId === socketId);
+
+    if (index !== -1) {
+        return users.splice(index, 1)[0];
     }
-  });
+
+    return null;
 };
 
-// Function to log out a user
-const logoutUser = (req, res) => {
-  req.logout();
-  return res.status(200).json({ message: 'User logged out successfully' });
+// Function to get user by socket ID
+const getUserBySocketId = (socketId) => {
+    return users.find((user) => user.socketId === socketId);
 };
 
 module.exports = {
-  registerUser,
-  loginUser,
-  logoutUser,
+    addUser,
+    removeUser,
+    getUserBySocketId,
+    // Add more user-related functions as needed
 };

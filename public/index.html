@@ -1,32 +1,98 @@
+<!-- index.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Chat Application</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music App</title>
 </head>
 <body>
-  <h1>Chat Application</h1>
-  <input id="message" type="text" placeholder="Enter your message">
-  <button id="send">Send</button>
-  <ul id="messages"></ul>
+    <h1>Welcome to the Music App!</h1>
 
-  <script src="/socket.io/socket.io.js"></script>
-  <script>
-    const socket = io();
-    const messageInput = document.getElementById('message');
-    const sendButton = document.getElementById('send');
-    const messageList = document.getElementById('messages');
+    <div>
+        <label for="soundcloud-url">Enter SoundCloud URL:</label>
+        <input type="text" id="soundcloud-url" placeholder="https://soundcloud.com/your-username/your-track">
+        <button onclick="playTrack()">Play</button>
+    </div>
 
-    sendButton.addEventListener('click', () => {
-      const message = messageInput.value;
-      socket.emit('message', message);
-      messageInput.value = '';
-    });
+    <div id="soundcloud-player"></div>
 
-    socket.on('message', (message) => {
-      const li = document.createElement('li');
-      li.appendChild(document.createTextNode(message));
-      messageList.appendChild(li);
-    });
-  </script>
+    <div id="track-queue">
+        <h2>Track Queue</h2>
+        <ul id="queue-list"></ul>
+        <button onclick="addToQueue()">Add to Queue</button>
+    </div>
+
+    <div id="volume-control">
+        <label for="volume-slider">Volume:</label>
+        <input type="range" id="volume-slider" min="0" max="100" step="1" value="100">
+    </div>
+
+    <!-- Display Lobby Key and Copy Button -->
+    <div id="lobby-key-section">
+        <p>Lobby Key: <span id="lobby-key"><?php echo $_GET['key']; ?></span></p>
+        <button onclick="copyKey()">Copy Key</button>
+    </div>
+
+    <script src="https://connect.soundcloud.com/sdk/sdk-3.3.2.js"></script>
+    <script>
+        // Initialize SoundCloud SDK
+        SC.initialize({
+            client_id: 'YOUR_SOUND_CLOUD_CLIENT_ID',
+        });
+
+        // Queue array to store track URLs
+        var trackQueue = [];
+
+        // Function to play a track
+        function playTrack() {
+            var soundcloudUrl = document.getElementById('soundcloud-url').value;
+
+            // Use the SoundCloud SDK to create a player
+            SC.oEmbed(soundcloudUrl, {
+                auto_play: true,
+            }).then(function (oEmbed) {
+                var playerContainer = document.getElementById('soundcloud-player');
+                playerContainer.innerHTML = oEmbed.html;
+            });
+        }
+
+        // Function to add a track to the queue
+        function addToQueue() {
+            var soundcloudUrl = document.getElementById('soundcloud-url').value;
+            trackQueue.push(soundcloudUrl);
+
+            // Update the queue list
+            displayQueueAsList();
+
+            // Clear the input field
+            document.getElementById('soundcloud-url').value = '';
+        }
+
+        // Function to display the queue as a list
+        function displayQueueAsList() {
+            var queueList = document.getElementById('queue-list');
+            queueList.innerHTML = ''; // Clear the current list
+
+            trackQueue.forEach(function (url) {
+                var listItem = document.createElement('li');
+                listItem.textContent = url;
+                queueList.appendChild(listItem);
+            });
+        }
+
+        // Function to copy the lobby key to the clipboard
+        function copyKey() {
+            var lobbyKey = document.getElementById('lobby-key').textContent;
+            var dummyTextarea = document.createElement('textarea');
+            document.body.appendChild(dummyTextarea);
+            dummyTextarea.value = lobbyKey;
+            dummyTextarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(dummyTextarea);
+
+            alert('Lobby Key copied to clipboard: ' + lobbyKey);
+        }
+    </script>
 </body>
 </html>

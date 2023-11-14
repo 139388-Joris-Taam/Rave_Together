@@ -1,34 +1,63 @@
-// Import any necessary models or modules you need
-const Music = require('../models/music'); // Replace with the actual music model
+// musicController.js
+const SC = require('soundcloud'); // Make sure to install the 'soundcloud' package
 
-// Function to get music by ID
-const getMusicById = (req, res) => {
-  const musicId = req.params.id;
-  // Implementation to retrieve music by ID from the database
+// Function to play SoundCloud track
+const playTrack = (req, res) => {
+    const { url } = req.body;
+    createSoundCloudPlayer(url);
+    res.status(200).json({ message: 'Track is playing.' });
 };
 
-// Function to create new music
-const createNewMusic = (req, res) => {
-  const { title, artist, url } = req.body;
-  // Implementation to create and save a new music track to the database
+// Function to add a track to the queue
+const addToQueue = (req, res) => {
+    const { url } = req.body;
+    addToQueueArray(url);
+    res.status(200).json({ message: 'Track added to the queue.' });
 };
 
-// Function to update music information
-const updateMusic = (req, res) => {
-  const musicId = req.params.id;
-  const updatedMusicData = req.body;
-  // Implementation to update the information of a music track in the database
+// Function to create SoundCloud player iframe
+const createSoundCloudPlayer = (url) => {
+    // Your existing code to create and append the iframe
+    // ...
+
+    initializeWidget(iframe);
 };
 
-// Function to delete music
-const deleteMusic = (req, res) => {
-  const musicId = req.params.id;
-  // Implementation to delete a music track from the database
+// Function to initialize SoundCloud widget
+const initializeWidget = (iframe) => {
+    const widget = SC.Widget(iframe);
+
+    widget.bind(SC.Widget.Events.FINISH, function () {
+        playNextTrack();
+    });
+};
+
+// Function to create a new playlist
+const createPlaylist = (req, res) => {
+    // Implementation to create a new playlist and save it to the database
+};
+
+// Function to add a track to a playlist
+const addTrackToPlaylist = (req, res) => {
+    // Implementation to add a track to a playlist in the database
+};
+
+// Function to remove a track from a playlist
+const removeTrackFromPlaylist = (req, res) => {
+    // Implementation to remove a track from a playlist in the database
+};
+
+// Function to get the tracks in a playlist
+const getTracksInPlaylist = (req, res) => {
+    // Implementation to retrieve and return the tracks in a playlist
 };
 
 module.exports = {
-  getMusicById,
-  createNewMusic,
-  updateMusic,
-  deleteMusic,
+    playTrack,
+    addToQueue,
+    createPlaylist,
+    addTrackToPlaylist,
+    removeTrackFromPlaylist,
+    getTracksInPlaylist,
+    // ... other exported functions
 };

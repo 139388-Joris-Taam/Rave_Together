@@ -1,19 +1,25 @@
-const mongoose = require('mongoose');
+// modules/user.js
+class User {
+  constructor(username, socketId) {
+      this.username = username;
+      this.socketId = socketId;
+      this.trackQueue = [];
+  }
 
-// Define the user schema
-const userSchema = new mongoose.Schema({
-  username: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  // Add more fields as needed (e.g., email, profile info)
-});
+  addToQueue(music) {
+      this.trackQueue.push(music);
+  }
 
-const User = mongoose.model('User', userSchema);
+  removeFromQueue(index) {
+      if (index >= 0 && index < this.trackQueue.length) {
+          return this.trackQueue.splice(index, 1)[0];
+      }
+      return null;
+  }
+
+  getQueue() {
+      return this.trackQueue;
+  }
+}
 
 module.exports = User;
